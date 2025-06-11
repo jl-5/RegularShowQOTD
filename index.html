@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="Benson_head.png" type="image/png">
+
+    <title>Regular Show Quote of the Day</title>
+    <style>
+        .dialogue-box {
+            background-color: rgb(255, 255, 255);
+            color: black;
+            border: 5px solid black;
+            padding: 20px;
+            display: inline-block;
+            border-radius: 4px;
+            max-width: 90%;
+            margin: 20px auto;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .dialogue {
+            font-size: 2em;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            line-height: 1.5;
+            color: black;
+            background-color: white;
+            border: 2px solid black;
+            padding: 20px;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0 black;
+            position: relative;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        #content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            margin-top: 0%;
+        }
+
+        #characterImage {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            margin: 0px 0;
+        }
+
+        .dialogue {
+            font-size: 1.7em;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+
+        #tagline {
+            font-style: italic;
+            margin-top: 20px;
+            font-size: 1em;
+            padding: 0 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        #siteTitle {
+            font-family: cursive;
+            letter-spacing: 2px;
+            color: white;
+            text-shadow:
+                -2px -2px 0 black,
+                2px -2px 0 black,
+                -2px 2px 0 black,
+                2px 2px 0 black;
+        }
+
+
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 3em;
+            }
+
+            .dialogue {
+                font-size: 2.0em;
+                font-weight: 500;
+            }
+
+            #tagline {
+                font-size: 1.6em;
+            }
+
+            #citation {
+                font-size: 1.8em;
+            }
+
+            #characterImage {
+                width: 300px;
+                height: 300px;
+            }
+
+            button {
+                font-size: 1.2em;
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="regularShowLogo" class="fade-in" src="regular_show_logo.png" alt="Logo" style="width: 50%; height: auto;">
+    <h1 id="siteTitle" class="fade-in" style="font-family: monospace; position: relative; top: -0px;"></h1>
+
+    <div id="content">
+        <img id="characterImage" class="fade-in" src="" alt="Character Image">
+        <div class="dialogue fade-in dialogue-box" id="dialogueText"
+            style="font-family: Bookman, URW Bookman L, serif;"></div>
+
+    </div>
+    <div id="citation" class="fade-in" style="margin-top: 40px; font-family: monospace"></div>
+    <div id="tagline" class="fade-in" style="margin-top: 40px; font-style: italic; font-family: monospace;"></div>
+    <div id="countdown" style="
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.9em;
+  z-index: 999;
+">
+        Loading countdown...
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+    <script>
+        let loadingTime = 1500;
+
+        let dialogueData = [];
+        fetch('dialogue_data.json')
+            .then(response => response.json())
+            .then(data => {
+                dialogueData = data;
+                showRandomLine();
+            });
+
+        let taglines = [];
+        fetch('taglines.txt')
+            .then(response => response.text())
+            .then(text => {
+                taglines = text.split('\n').filter(line => line.trim() !== '');
+            });
+
+        const colorThief = new ColorThief();
+        const imageElement = document.getElementById('characterImage');
+        const body = document.body;
+
+        function showRandomLine() {
+            if (dialogueData.length === 0) return;
+
+            // Create a daily seed based on the current date
+            const today = new Date().toISOString().split('T')[0]; // e.g. "2025-06-07"
+            const seed = hashCode(today);
+
+            // Generate a random dialogue line using today's seed
+            const shuffled = seededShuffle(dialogueData, seed);
+            const item = shuffled[0];
+
+            const taglineIndex = seed % taglines.length;
+
+            const taglineTemplate = taglines[taglineIndex];
+            const tagline = taglineTemplate.replace(/\[character\]/gi, item.character);
+
+
+            const imageElement = document.getElementById('characterImage');
+            const dialogueText = document.getElementById('dialogueText');
+            const taglineEl = document.getElementById('tagline');
+            const citationEl = document.getElementById('citation');
+
+            imageElement.src = item.image;
+            imageElement.alt = item.character;
+            dialogueText.innerHTML = `"${item.line}"`;
+            citationEl.innerHTML = `— <strong>${item.character}</strong>, ${item.episode_code}: "${item.episode}"`;
+            taglineEl.innerHTML = `${tagline}`;
+
+            imageElement.onload = function () {
+                try {
+                    const dominantColor = colorThief.getColor(imageElement);
+                    const [r, g, b] = dominantColor;
+                    const bgColor = `rgb(${r}, ${g}, ${b})`;
+                    document.body.style.backgroundColor = bgColor;
+
+                    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+                    const textColor = luminance < 128 ? '#ffffff' : '#000000';
+
+                    document.body.style.color = textColor;
+                    dialogueText.style.color = '#000000';
+                    citationEl.style.color = textColor;
+                    //document.getElementById('siteTitle').style.color = textColor;
+                    taglineEl.style.color = textColor;
+                } catch (e) {
+                    console.error('Could not get dominant color:', e);
+                    document.body.style.backgroundColor = '#ffffff';
+                    document.body.style.color = '#000000';
+                }
+            };
+        }
+
+        // Simple hash function to turn date string into number (courtesy of ChatGPT)
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const chr = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + chr;
+                hash |= 0; // Convert to 32bit integer
+            }
+            return Math.abs(hash);
+        }
+
+        // Function to shuffle an array deterministically using a seed (courtesy of ChatGPT)
+        function seededShuffle(array, seed) {
+            let result = [...array];
+            let random = mulberry32(seed);
+            for (let i = result.length - 1; i > 0; i--) {
+                const j = Math.floor(random() * (i + 1));
+                [result[i], result[j]] = [result[j], result[i]];
+            }
+            return result;
+        }
+
+        // Mulberry32: simple deterministic PRNG (courtesy of ChatGPT)
+        function mulberry32(seed) {
+            return function () {
+                var t = seed += 0x6D2B79F5;
+                t = Math.imul(t ^ (t >>> 15), t | 1);
+                t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
+        }
+
+        window.onload = () => {
+            const fadeIns = document.querySelectorAll('.fade-in');
+            fadeIns.forEach((el, i) => {
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, i * loadingTime);
+            });
+
+            // ⬇️ Move this inside here
+            const siteTitle = document.getElementById('siteTitle');
+            const today = new Date();
+            const dateStr = today.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+            siteTitle.textContent = `QUOTE OF THE DAY: ${dateStr}`;
+        };
+
+
+        function updateCountdown() {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0); // set to next midnight
+
+            const diff = midnight - now;
+
+            const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
+            const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
+            const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+
+            document.getElementById("countdown").innerHTML =
+                `Created by <a href="https://github.com/jl-5" target="_blank" style="color: white; text-decoration: underline;">jl-5</a>. Next quote in ${hours}:${minutes}:${seconds}`;
+        }
+
+        // Start countdown and refresh every second
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        function scheduleMidnightRefresh() {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0); // next midnight
+
+            const msUntilMidnight = midnight - now;
+
+            setTimeout(() => {
+                location.reload(); // reloads page at midnight
+            }, msUntilMidnight);
+        }
+
+        scheduleMidnightRefresh();
+
+
+    </script>
+</body>
+
+</html>
