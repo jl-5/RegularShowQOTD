@@ -3,11 +3,37 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="Benson_head.png" type="image/png">
 
     <title>Regular Show QOTD</title>
     <style>
+        #citation,
+        #tagline {
+            color: black;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+
         .dialogue-box {
             background-color: rgb(255, 255, 255);
             color: black;
@@ -21,7 +47,7 @@
         }
 
         .dialogue {
-            font-size: 2em;
+            font-size: 3em;
             font-family: 'Georgia', serif;
             font-style: italic;
             line-height: 1.5;
@@ -38,6 +64,7 @@
             box-shadow: 4px 4px 0 black;
             position: relative;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
         }
 
         #content {
@@ -56,7 +83,7 @@
         h1 {
             font-size: 2em;
             margin-bottom: 20px;
-            margin-top: 0%;
+            margin-top: 0;
         }
 
         #characterImage {
@@ -98,6 +125,7 @@
 
         /* Mobile styles */
         @media (max-width: 767px) {
+
             body {
                 padding: 10px;
             }
@@ -133,8 +161,6 @@
 
         }
 
-
-
         /* Desktop styles */
         @media (min-width: 768px) {
             h1 {
@@ -142,48 +168,71 @@
             }
 
             .dialogue {
-                font-size: 2.0em;
+                font-size: 3.0em;
                 font-weight: 500;
             }
 
             #tagline {
                 font-size: 1.6em;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                padding: 20px;
             }
 
             #citation {
                 font-size: 1.8em;
+                margin-top: 20px;
             }
 
             #characterImage {
                 width: 300px;
                 height: 300px;
+                margin-top: 20px;
             }
         }
 
         .fade-in {
             opacity: 0;
-            transition: opacity 1s ease-in;
+            transition: opacity 0s ease-in;
         }
 
         .fade-in.visible {
             opacity: 1;
         }
+
+        .column-container {
+            max-width: 1200px;
+            width: 100%;
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 200px;
+            overflow: hidden;
+            padding: 20px;
+            border: 10px double rgb(255, 255, 255);
+            
+        }
     </style>
 </head>
 
 <body>
-    <img id="regularShowLogo" class="fade-in" src="regular_show_logo.png" alt="Logo">
+    <div class="column-container">
+        <img id="regularShowLogo" class="fade-in" src="regular_show_logo.png" alt="Logo">
 
-    <h1 id="siteTitle" class="fade-in" style="font-family: monospace; position: relative; top: -0px;"></h1>
+        <h1 id="siteTitle" class="fade-in" style="font-family: monospace; position: relative; top: -0px;"></h1>
 
-    <div id="content">
-        <img id="characterImage" class="fade-in" src="" alt="Character Image">
-        <div class="dialogue fade-in dialogue-box" id="dialogueText"
-            style="font-family: Bookman, URW Bookman L, serif;"></div>
+        <div id="content">
+            <img id="characterImage" class="fade-in" src="" alt="Character Image">
+            <div class="dialogue fade-in dialogue-box" id="dialogueText"
+                style="font-family: Bookman, URW Bookman L, serif;"></div>
+        </div>
 
+        <div id="citation" class="fade-in" style="font-family: monospace"></div>
+        <div id="tagline" class="fade-in" style="font-style: italic; font-family: monospace;"></div>
     </div>
-    <div id="citation" class="fade-in" style="font-family: monospace"></div>
-    <div id="tagline" class="fade-in" style="font-style: italic; font-family: monospace;"></div>
+
+
     <div id="countdown" style="
   position: fixed;
   bottom: 10px;
@@ -203,10 +252,10 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
     <script>
-        let loadingTime = 1500;
+        let loadingTime = 2000;
 
         let dialogueData = [];
-        fetch('dialogue_data.json')
+        fetch(`dialogue_data.json?nocache=${new Date().toISOString().split('T')[0]}`)
             .then(response => response.json())
             .then(data => {
                 dialogueData = data;
@@ -214,7 +263,7 @@
             });
 
         let taglines = [];
-        fetch('taglines.txt')
+        fetch(`taglines.txt?nocache=${new Date().toISOString().split('T')[0]}`)
             .then(response => response.text())
             .then(text => {
                 taglines = text.split('\n').filter(line => line.trim() !== '');
@@ -228,16 +277,20 @@
             if (dialogueData.length === 0) return;
 
             // Create a daily seed based on the current date
+            console.log("Today's date:", new Date().toISOString());
+            console.log("Today's date (ISO):", new Date().toISOString());
+            console.log("Today's date (split):", new Date().toISOString().split('T')[0]);
             const today = new Date().toISOString().split('T')[0]; // e.g. "2025-06-07"
             const seed = hashCode(today);
+            console.log(`Today's seed: ${seed}`);
 
             // Generate a random dialogue line using today's seed
             const shuffled = seededShuffle(dialogueData, seed);
+            console.log("Shuffled dialogue data:", shuffled.slice(0, 10)); // Log first 10 shuffled items for debugging
+            console.log("Selected item:", shuffled[0]);
             const item = shuffled[0];
 
-            const taglineIndex = seed % taglines.length;
-
-            const taglineTemplate = taglines[taglineIndex];
+            const taglineTemplate = seededShuffle(taglines, seed)[0];
             const tagline = taglineTemplate.replace(/\[character\]/gi, item.character);
 
 
@@ -261,12 +314,18 @@
 
                     const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
                     const textColor = luminance < 128 ? '#ffffff' : '#000000';
-
-                    document.body.style.color = textColor;
                     dialogueText.style.color = '#000000';
-                    citationEl.style.color = textColor;
-                    //document.getElementById('siteTitle').style.color = textColor;
-                    taglineEl.style.color = textColor;
+
+                    const isMobile = window.innerWidth <= 767;
+
+                    if (isMobile) {
+                        citationEl.style.color = textColor;
+                        taglineEl.style.color = textColor;
+                    } else {
+                        citationEl.style.color = 'white';
+                        taglineEl.style.color = 'white';
+                    }
+
                 } catch (e) {
                     console.error('Could not get dominant color:', e);
                     document.body.style.backgroundColor = '#ffffff';
@@ -315,7 +374,6 @@
                 }, i * loadingTime);
             });
 
-            // ⬇️ Move this inside here
             const siteTitle = document.getElementById('siteTitle');
             const today = new Date();
             const dateStr = today.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
