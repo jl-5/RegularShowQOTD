@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="Benson_head.png" type="image/png">
 
-    <title>Regular Show Quote of the Day</title>
+    <title>Regular Show QOTD</title>
     <style>
         .dialogue-box {
             background-color: rgb(255, 255, 255);
@@ -46,7 +46,6 @@
             align-items: center;
         }
 
-
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -64,7 +63,7 @@
             width: 200px;
             height: 200px;
             object-fit: contain;
-            margin: 0px 0;
+            margin-bottom: 20px;
         }
 
         .dialogue {
@@ -80,13 +79,6 @@
             padding: 0 10px;
         }
 
-        button {
-            padding: 10px 20px;
-            font-size: 1em;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-
         #siteTitle {
             font-family: cursive;
             letter-spacing: 2px;
@@ -98,7 +90,23 @@
                 2px 2px 0 black;
         }
 
+        #regularShowLogo {
+            width: 100%;
+            height: auto;
+            max-width: 700px;
+        }
 
+        /* Mobile styles */
+        @media (max-width: 767px) {
+            #regularShowLogo {
+                width: 120%;
+                max-width: 500px;
+            }
+        }
+
+
+
+        /* Desktop styles */
         @media (min-width: 768px) {
             h1 {
                 font-size: 3em;
@@ -139,7 +147,8 @@
 </head>
 
 <body>
-    <img id="regularShowLogo" class="fade-in" src="regular_show_logo.png" alt="Logo" style="width: 50%; height: auto;">
+    <img id="regularShowLogo" class="fade-in" src="regular_show_logo.png" alt="Logo">
+
     <h1 id="siteTitle" class="fade-in" style="font-family: monospace; position: relative; top: -0px;"></h1>
 
     <div id="content">
@@ -285,7 +294,8 @@
             const siteTitle = document.getElementById('siteTitle');
             const today = new Date();
             const dateStr = today.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-            siteTitle.textContent = `RANDOM QUOTE OF THE DAY: ${dateStr}`;
+            siteTitle.innerHTML = `<em>Random Quote of the Day</em>: ${dateStr}`;
+
         };
 
 
