@@ -25,13 +25,30 @@
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-            font-family: Arial, sans-serif;
-            text-align: center;
+            background-image: url('background.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
         }
+
+        main,
+        .container,
+        .column,
+        #root {
+            margin: 0;
+            padding: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
 
 
         .dialogue-box {
@@ -73,13 +90,6 @@
             align-items: center;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 30px;
-            margin: 0;
-        }
-
         h1 {
             font-size: 2em;
             margin-bottom: 20px;
@@ -115,13 +125,54 @@
                 2px -2px 0 black,
                 -2px 2px 0 black,
                 2px 2px 0 black;
+            margin-top: 0;
         }
 
         #regularShowLogo {
             width: 100%;
             height: auto;
             max-width: 700px;
+            display: block;
+            margin-top: 50px;
         }
+
+        .column-container {
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            margin: 0;
+            padding: 0;
+            border-radius: 0px;
+            border: 0px dashed rgb(255, 255, 255);
+            z-index: 1;
+        }
+
+        .side-image {
+            position: fixed;
+            bottom: 0;
+            height: 30vh;
+            width: auto;
+            opacity: 0.3;
+            z-index: 1;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .side-image.left {
+            left: 0;
+        }
+
+        .side-image.right {
+            right: 0;
+        }
+
+
 
         /* Mobile styles */
         @media (max-width: 767px) {
@@ -185,8 +236,8 @@
             }
 
             #characterImage {
-                width: 300px;
-                height: 300px;
+                width: 350px;
+                height: 350px;
                 margin-top: 20px;
             }
         }
@@ -199,24 +250,25 @@
         .fade-in.visible {
             opacity: 1;
         }
-
-        .column-container {
-            max-width: 1200px;
-            width: 100%;
-            background-image: url('background.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            border-radius: 200px;
-            overflow: hidden;
-            padding: 20px;
-            border: 10px double rgb(255, 255, 255);
-            
-        }
     </style>
 </head>
 
 <body>
+    <audio id="introAudio" src="intro.mp3" autoplay muted></audio>
+
+    <img id="muteButton" src="mute.png" alt="Mute Button" style="
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 8px 12px;
+  z-index: 999;
+height: 10vh;
+width: auto;
+">
+
+
+    <img src="mordecai_face.png" alt="mordecai_face" class="side-image left">
+    <img src="rigby_face.png" alt="rigby_face" class="side-image right">
     <div class="column-container">
         <img id="regularShowLogo" class="fade-in" src="regular_show_logo.png" alt="Logo">
 
@@ -235,7 +287,7 @@
 
     <div id="countdown" style="
   position: fixed;
-  bottom: 10px;
+  top: 10px;
   right: 10px;
   background-color: rgba(0,0,0,0.5);
   color: white;
@@ -252,7 +304,31 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
     <script>
-        let loadingTime = 2000;
+
+        const audio = document.getElementById('introAudio');
+
+        audio.onplay = () => {
+            console.log("Muted autoplay triggered.");
+        };
+
+        audio.onerror = () => {
+            console.log("Audio failed to load.");
+        };
+
+
+        const muteButton = document.getElementById('muteButton');
+        muteButton.addEventListener('click', () => {
+            const audio = document.getElementById('introAudio');
+            if (audio.muted) {
+                audio.muted = false;
+                muteButton.src = "unmute.png";
+                console.log("Audio unmuted");
+            } else {
+                audio.muted = true;
+                muteButton.src = "mute.png";
+                console.log("Audio muted");
+            }
+        });
 
         let dialogueData = [];
         fetch(`dialogue_data.json?nocache=${new Date().toISOString().split('T')[0]}`)
@@ -273,14 +349,25 @@
         const imageElement = document.getElementById('characterImage');
         const body = document.body;
 
+        function myFunction() {
+            console.log("The audio finished playing.");
+
+        }
+
         function showRandomLine() {
             if (dialogueData.length === 0) return;
 
-            // Create a daily seed based on the current date
-            console.log("Today's date:", new Date().toISOString());
-            console.log("Today's date (ISO):", new Date().toISOString());
-            console.log("Today's date (split):", new Date().toISOString().split('T')[0]);
-            const today = new Date().toISOString().split('T')[0]; // e.g. "2025-06-07"
+            // Create a daily seed based on the current date using toLocaleString
+            const todayDate = new Date();
+            console.log("Today's date:", todayDate.toLocaleString());
+            console.log("Today's date (locale date only):", todayDate.toLocaleDateString());
+
+            // Format the date as "YYYY-MM-DD" using locale parts
+            const dateParts = todayDate.toLocaleDateString('en-CA'); // 'en-CA' gives "YYYY-MM-DD"
+            console.log("Today's date (locale en-CA):", dateParts);
+
+            const today = dateParts; // "2025-06-07"
+
             const seed = hashCode(today);
             console.log(`Today's seed: ${seed}`);
 
@@ -367,13 +454,28 @@
         }
 
         window.onload = () => {
-            const fadeIns = document.querySelectorAll('.fade-in');
-            fadeIns.forEach((el, i) => {
-                setTimeout(() => {
-                    el.classList.add('visible');
-                }, i * loadingTime);
-            });
 
+            const START_DELAY = 2000; // Delay before starting the fade-in effect
+            const LOADING_TIME = 2000;
+
+            const fadeIns = document.querySelectorAll('.fade-in');
+
+            setTimeout(() => {
+                fadeIns.forEach((el, i) => {
+                    setTimeout(() => {
+                        el.classList.add('visible');
+
+                        // After tagline is shown, fade in the side images
+                        if (el.id === "tagline") {
+                            document.querySelectorAll('.side-image').forEach(img => {
+                                img.setAttribute('style', 'visibility: visible');
+                            });
+                        }
+                    }, i * LOADING_TIME);
+                });
+            }, START_DELAY);
+
+            // Set the site title with today's date
             const siteTitle = document.getElementById('siteTitle');
             const today = new Date();
             const dateStr = today.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
