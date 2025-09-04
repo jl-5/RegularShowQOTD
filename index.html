@@ -64,25 +64,18 @@
         }
 
         .dialogue {
-            font-size: 3em;
-            font-family: 'Georgia', serif;
-            font-style: italic;
-            line-height: 1.5;
-            color: black;
-            background-color: white;
-            border: 2px solid black;
+            max-width: 90vw;
+            min-width: 200px;
+            width: auto;
+            display: block;
             padding: 20px;
-            margin-top: 20px;
-            margin-left: auto;
-            margin-right: auto;
             text-align: center;
-            max-width: 600px;
-            border-radius: 12px;
-            box-shadow: 4px 4px 0 black;
-            position: relative;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-            font-weight: 500;
+            word-wrap: break-word;
+            white-space: normal;
+            /* allow wrapping */
         }
+
+
 
         #content {
             display: flex;
@@ -114,6 +107,7 @@
             margin-top: 20px;
             font-size: 1em;
             padding: 0 10px;
+            margin-bottom: 200px;
         }
 
         #siteTitle {
@@ -172,6 +166,13 @@
             right: 0;
         }
 
+        .quote-line {
+            display: inline-block;
+            max-width: 100%;
+            white-space: normal;
+            /* allow text to wrap */
+            transition: font-size 0.2s ease;
+        }
 
 
         /* Mobile styles */
@@ -254,7 +255,7 @@
 </head>
 
 <body>
-    <audio id="introAudio" src="intro.mp3" autoplay muted></audio>
+    <audio id="introAudio" src="intro.mp3" muted autoplay></audio>
 
     <img id="muteButton" src="mute.png" alt="Mute Button" style="
   position: fixed;
@@ -383,7 +384,8 @@ width: auto;
 
             imageElement.src = item.image;
             imageElement.alt = item.character;
-            dialogueText.innerHTML = `"${item.line}"`;
+            dialogueText.innerHTML = `<span class="quote-line">"${item.line}"</span>`;
+
             citationEl.innerHTML = `— <strong>${item.character}</strong>, ${item.episode_code}: "${item.episode}"`;
             taglineEl.innerHTML = `${tagline}`;
 
@@ -493,6 +495,43 @@ width: auto;
             document.getElementById("countdown").innerHTML =
                 `Created by <a href="https://github.com/jl-5" target="_blank" style="color: white; text-decoration: underline;">jl-5</a>. Next quote in ${hours}:${minutes}:${seconds}`;
         }
+
+
+        const quoteSpan = dialogueText.querySelector('.quote-line');
+
+        // Start with max font size
+        let fontSize = window.innerWidth < 768 ? 2.0 : 3.5;
+        quoteSpan.style.fontSize = `${fontSize}em`;
+
+        // Max number of lines allowed
+        const maxLines = 2;
+
+        const getLineHeight = () => {
+            const testEl = document.createElement("span");
+            testEl.style.fontSize = quoteSpan.style.fontSize;
+            testEl.style.fontFamily = window.getComputedStyle(quoteSpan).fontFamily;
+            testEl.innerText = "A";
+            document.body.appendChild(testEl);
+            const height = testEl.offsetHeight;
+            document.body.removeChild(testEl);
+            return height;
+        };
+
+        while (fontSize > 0.5) {
+            const lineHeight = getLineHeight();
+            const numLines = Math.ceil(quoteSpan.scrollHeight / lineHeight);
+
+            if (numLines <= maxLines) {
+                break;
+            }
+
+            fontSize -= 0.1;
+            quoteSpan.style.fontSize = `${fontSize}em`;
+        }
+
+
+
+
 
         // Start countdown and refresh every second
         setInterval(updateCountdown, 1000);
