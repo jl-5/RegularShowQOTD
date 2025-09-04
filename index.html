@@ -172,6 +172,7 @@
             white-space: normal;
             /* allow text to wrap */
             transition: font-size 0.2s ease;
+            font-size: 1.7em;
         }
 
 
@@ -257,16 +258,6 @@
 <body>
     <audio id="introAudio" src="intro.mp3" muted autoplay></audio>
 
-    <img id="muteButton" src="mute.png" alt="Mute Button" style="
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  padding: 8px 12px;
-  z-index: 999;
-height: 10vh;
-width: auto;
-">
-
 
     <img src="mordecai_face.png" alt="mordecai_face" class="side-image left">
     <img src="rigby_face.png" alt="rigby_face" class="side-image right">
@@ -305,31 +296,6 @@ width: auto;
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
     <script>
-
-        const audio = document.getElementById('introAudio');
-
-        audio.onplay = () => {
-            console.log("Muted autoplay triggered.");
-        };
-
-        audio.onerror = () => {
-            console.log("Audio failed to load.");
-        };
-
-
-        const muteButton = document.getElementById('muteButton');
-        muteButton.addEventListener('click', () => {
-            const audio = document.getElementById('introAudio');
-            if (audio.muted) {
-                audio.muted = false;
-                muteButton.src = "unmute.png";
-                console.log("Audio unmuted");
-            } else {
-                audio.muted = true;
-                muteButton.src = "mute.png";
-                console.log("Audio muted");
-            }
-        });
 
         let dialogueData = [];
         fetch(`dialogue_data.json?nocache=${new Date().toISOString().split('T')[0]}`)
