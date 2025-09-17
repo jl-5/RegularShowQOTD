@@ -256,8 +256,6 @@
 </head>
 
 <body>
-    <audio id="introAudio" src="intro.mp3" muted autoplay></audio>
-
 
     <img src="mordecai_face.png" alt="mordecai_face" class="side-image left">
     <img src="rigby_face.png" alt="rigby_face" class="side-image right">
@@ -463,19 +461,19 @@
         }
 
 
-        const quoteSpan = dialogueText.querySelector('.quote-line');
+        //const quoteSpan = dialogueText.querySelector('.quote-line');
 
         // Start with max font size
         let fontSize = window.innerWidth < 768 ? 2.0 : 3.5;
-        quoteSpan.style.fontSize = `${fontSize}em`;
+        dialogueText.style.fontSize = `${fontSize}em`;
 
         // Max number of lines allowed
         const maxLines = 2;
 
         const getLineHeight = () => {
             const testEl = document.createElement("span");
-            testEl.style.fontSize = quoteSpan.style.fontSize;
-            testEl.style.fontFamily = window.getComputedStyle(quoteSpan).fontFamily;
+            testEl.style.fontSize = dialogueText.style.fontSize;
+            testEl.style.fontFamily = window.getComputedStyle(dialogueText).fontFamily;
             testEl.innerText = "A";
             document.body.appendChild(testEl);
             const height = testEl.offsetHeight;
@@ -485,7 +483,7 @@
 
         while (fontSize > 0.5) {
             const lineHeight = getLineHeight();
-            const numLines = Math.ceil(quoteSpan.scrollHeight / lineHeight);
+            const numLines = Math.ceil(dialogueText.scrollHeight / lineHeight);
 
             if (numLines <= maxLines) {
                 break;
