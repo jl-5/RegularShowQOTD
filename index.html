@@ -14,7 +14,7 @@
     <style>
         #citation,
         #tagline {
-            color: black;
+            color: white;
         }
 
         html,
@@ -147,25 +147,6 @@
             z-index: 1;
         }
 
-        .side-image {
-            position: fixed;
-            bottom: 0;
-            height: 30vh;
-            width: auto;
-            opacity: 0.3;
-            z-index: 1;
-            pointer-events: none;
-            visibility: hidden;
-        }
-
-        .side-image.left {
-            left: 0;
-        }
-
-        .side-image.right {
-            right: 0;
-        }
-
         .quote-line {
             display: inline-block;
             max-width: 100%;
@@ -245,20 +226,13 @@
         }
 
         .fade-in {
-            opacity: 0;
-            transition: opacity 0s ease-in;
-        }
-
-        .fade-in.visible {
+            transition: opacity 1s ease-in;
             opacity: 1;
         }
     </style>
 </head>
 
 <body>
-
-    <img src="mordecai_face.png" alt="mordecai_face" class="side-image left">
-    <img src="rigby_face.png" alt="rigby_face" class="side-image right">
     <div class="column-container">
         <img id="regularShowLogo" class="fade-in" src="regular_show_logo.png" alt="Logo">
 
@@ -289,10 +263,6 @@
 ">
         Loading countdown...
     </div>
-
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
     <script>
 
         let dialogueData = [];
@@ -310,7 +280,7 @@
                 taglines = text.split('\n').filter(line => line.trim() !== '');
             });
 
-        const colorThief = new ColorThief();
+
         const imageElement = document.getElementById('characterImage');
         const body = document.body;
 
@@ -352,34 +322,6 @@
 
             citationEl.innerHTML = `— <strong>${item.character}</strong>, ${item.episode_code}: "${item.episode}"`;
             taglineEl.innerHTML = `${tagline}`;
-
-            imageElement.onload = function () {
-                try {
-                    const dominantColor = colorThief.getColor(imageElement);
-                    const [r, g, b] = dominantColor;
-                    const bgColor = `rgb(${r}, ${g}, ${b})`;
-                    document.body.style.backgroundColor = bgColor;
-
-                    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
-                    const textColor = luminance < 128 ? '#ffffff' : '#000000';
-                    dialogueText.style.color = '#000000';
-
-                    const isMobile = window.innerWidth <= 767;
-
-                    if (isMobile) {
-                        citationEl.style.color = textColor;
-                        taglineEl.style.color = textColor;
-                    } else {
-                        citationEl.style.color = 'white';
-                        taglineEl.style.color = 'white';
-                    }
-
-                } catch (e) {
-                    console.error('Could not get dominant color:', e);
-                    document.body.style.backgroundColor = '#ffffff';
-                    document.body.style.color = '#000000';
-                }
-            };
         }
 
         // Simple hash function to turn date string into number (courtesy of ChatGPT)
@@ -416,8 +358,8 @@
 
         window.onload = () => {
 
-            const START_DELAY = 2000; // Delay before starting the fade-in effect
-            const LOADING_TIME = 2000;
+            const START_DELAY = 0; // Delay before starting the fade-in effect
+            const LOADING_TIME = 1000;
 
             const fadeIns = document.querySelectorAll('.fade-in');
 
@@ -425,13 +367,6 @@
                 fadeIns.forEach((el, i) => {
                     setTimeout(() => {
                         el.classList.add('visible');
-
-                        // After tagline is shown, fade in the side images
-                        if (el.id === "tagline") {
-                            document.querySelectorAll('.side-image').forEach(img => {
-                                img.setAttribute('style', 'visibility: visible');
-                            });
-                        }
                     }, i * LOADING_TIME);
                 });
             }, START_DELAY);
@@ -492,10 +427,6 @@
             fontSize -= 0.1;
             quoteSpan.style.fontSize = `${fontSize}em`;
         }
-
-
-
-
 
         // Start countdown and refresh every second
         setInterval(updateCountdown, 1000);
