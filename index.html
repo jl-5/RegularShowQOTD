@@ -227,7 +227,13 @@
 
         .fade-in {
             transition: opacity 1s ease-in;
+        }
+
+        .fade-in.visible {
             opacity: 1;
+        }
+        .fade-in:not(.visible) {
+            opacity: 0;
         }
     </style>
 </head>
@@ -359,7 +365,7 @@
         window.onload = () => {
 
             const START_DELAY = 0; // Delay before starting the fade-in effect
-            const LOADING_TIME = 1000;
+            const LOADING_TIME = 1500;
 
             const fadeIns = document.querySelectorAll('.fade-in');
 
