@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
@@ -13,41 +14,19 @@
 </head>
 
 <body>
-    <p>
-
-
     <div class="column-container">
         <img id="regularShowLogo" class="fade-in" src="regular_show_logo.png" alt="Logo">
-
         <h1 id="siteTitle" class="fade-in"
             style="font-family: monospace; position: relative; top: -0px; text-align: center;"></h1>
-
         <div id="content">
             <img id="characterImage" class="fade-in" src="" alt="Character Image">
             <div class="dialogue fade-in dialogue-box" id="dialogueText"
                 style="font-family: Bookman, URW Bookman L, serif;"></div>
         </div>
-
         <div id="citation" class="fade-in" style="font-family: monospace"></div>
         <div id="tagline" class="fade-in" style="font-style: italic; font-family: monospace;"></div>
     </div>
-
-
-    <div id="countdown" style="
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(0,0,0,0.5);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-family: monospace;
-  font-size: 0.9em;
-  z-index: 999;
-">
-        Loading countdown...
-    </div>
-    </p>
+    <div id="countdown" class="countdown"> Loading countdown...</div>
     <script>
 
         let dialogueData = [];
