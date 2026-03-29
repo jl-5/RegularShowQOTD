@@ -81,7 +81,7 @@ function mulberry32(seed) {
 window.shareQuote = function () {
     const dialogue = document.getElementById('dialogueText').textContent;
     const citation = document.getElementById('citation').textContent;
-    const shareText = `${dialogue}\n${citation}\n\nRegular Show Quote of the Day (https://jl-5.github.io/RegularShowQOTD/)`;
+    const shareText = `${dialogue}\n${citation}\n\nRegular Show Quote of the Day (https://regular-show-qotd.vercel.app/)`;
     const btn = document.getElementById('shareButton');
 
     if (navigator.share) {
