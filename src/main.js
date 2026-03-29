@@ -4,8 +4,8 @@ let dialogueData = [];
 let taglines = [];
 
 Promise.all([
-    fetch('/public/dialogue_data.json').then(r => r.json()),
-    fetch('/public/taglines.txt').then(r => r.text()),
+    fetch('/dialogue_data.json').then(r => r.json()),
+    fetch('/taglines.txt').then(r => r.text()),
 ]).then(([data, text]) => {
     dialogueData = data;
     taglines = text.split('\n').filter(line => line.trim() !== '');
@@ -30,7 +30,7 @@ function showRandomLine() {
     const taglineEl = document.getElementById('tagline');
     const citationEl = document.getElementById('citation');
 
-    imageElement.src = '/public/' + item.image;
+    imageElement.src = '/' + item.image;
     imageElement.alt = item.character;
     dialogueText.innerHTML = `"${item.line}"`;
     citationEl.innerHTML = `— <strong>${item.character}</strong>, ${item.episode_code}: "${item.episode}"`;
