@@ -16,12 +16,12 @@ function showRandomLine() {
     if (dialogueData.length === 0) return;
 
     const today = new Date().toISOString().split('T')[0];
-    const seed = hashCode(today);
+    const dayIndex = Math.floor(new Date(today).getTime() / (1000 * 60 * 60 * 24));
 
-    const shuffled = seededShuffle(dialogueData, seed);
-    const item = shuffled[0];
+    const ordered = seededShuffle(dialogueData, 42);
+    const item = ordered[dayIndex % ordered.length];
 
-    const taglineIndex = seed % taglines.length;
+    const taglineIndex = dayIndex % taglines.length;
     const taglineTemplate = taglines[taglineIndex];
     const tagline = taglineTemplate.replace(/\[character\]/gi, item.character);
 
@@ -49,15 +49,6 @@ function scaleDialogueText(el) {
     el.style.fontSize = size + 'px';
 }
 
-function hashCode(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        const chr = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + chr;
-        hash |= 0;
-    }
-    return Math.abs(hash);
-}
 
 function seededShuffle(array, seed) {
     let result = [...array];
