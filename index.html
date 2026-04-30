@@ -5,190 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="Benson_head.png" type="image/png">
-
+    <link rel="stylesheet" href="/src/styles.css">
     <title>Regular Show Quote of the Day</title>
-    <style>
-        .dialogue-box {
-            background-color: rgb(255, 255, 255);
-            color: black;
-            border: 5px solid black;
-            padding: 20px;
-            display: inline-block;
-            border-radius: 4px;
-            width: 82vw;
-            max-width: 1000px;
-            margin: 20px auto;
-            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
-        }
-
-        .dialogue {
-            font-family: 'Georgia', serif;
-            font-style: italic;
-            line-height: 1.5;
-            color: black;
-            background-color: white;
-            border: 2px solid black;
-            padding: 20px;
-            margin-top: 20px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-            border-radius: 12px;
-            box-shadow: 4px 4px 0 black;
-            position: relative;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        #content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 30px;
-            margin: 0;
-            background-image: url('/background.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-
-        h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
-            margin-top: 0%;
-        }
-
-        #characterImage {
-            width: 200px;
-            height: 200px;
-            object-fit: contain;
-            margin: 0px 0;
-        }
-
-        .dialogue {
-            margin-top: 20px;
-            padding: 0 10px;
-        }
-
-        #citation {
-            color: white;
-        }
-
-        #tagline {
-            font-style: italic;
-            margin-top: 20px;
-            font-size: 1em;
-            padding: 0 10px;
-            color: white;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 1em;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-
-        #shareButton {
-            background-color: rgb(255, 255, 255);
-            color: rgb(0, 0, 0);
-            border: 2px solid black;
-            border-radius: 6px;
-            font-family: monospace;
-            letter-spacing: 1px;
-            box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
-            transition: opacity 0.2s;
-        }
-
-        #shareButton:active {
-            opacity: 0.7;
-        }
-
-        #siteTitle {
-            font-family: cursive;
-            letter-spacing: 2px;
-            color: white;
-            text-shadow:
-                -2px -2px 0 black,
-                2px -2px 0 black,
-                -2px 2px 0 black,
-                2px 2px 0 black;
-        }
-
-
-        @media (min-width: 768px) {
-            h1 {
-                font-size: 3em;
-            }
-
-            .dialogue {
-                font-weight: 500;
-            }
-
-            #tagline {
-                font-size: 1.6em;
-            }
-
-            #citation {
-                font-size: 1.8em;
-                color: white;
-            }
-
-            #characterImage {
-                width: 300px;
-                height: 300px;
-            }
-
-            button {
-                font-size: 1.2em;
-            }
-        }
-
-        .fade-in {
-            opacity: 0;
-            transition: opacity 1s ease-in;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-        }
-    </style>
 </head>
 
 <body>
-    <img id="regularShowLogo" class="fade-in" src="/regular_show_logo.png" alt="Logo" style="width: 50%; height: auto;">
-    <h1 id="siteTitle" class="fade-in" style="font-family: monospace; position: relative; top: -0px;"></h1>
+    <img id="regularShowLogo" class="fade-in" src="/regular_show_logo.png" alt="Logo">
+    <h1 id="siteTitle" class="fade-in"></h1>
 
     <div id="content">
         <img id="characterImage" class="fade-in" src="" alt="Character Image">
-        <div class="dialogue fade-in dialogue-box" id="dialogueText"
-            style="font-family: Bookman, URW Bookman L, serif;"></div>
-
+        <div class="dialogue fade-in dialogue-box" id="dialogueText"></div>
     </div>
-    <div id="citation" class="fade-in" style="margin-top: 40px; font-family: monospace"></div>
-    <div id="tagline" class="fade-in" style="margin-top: 40px; font-style: italic; font-family: monospace;"></div>
+
+    <div id="citation" class="fade-in"></div>
+    <div id="tagline" class="fade-in"></div>
     <button id="shareButton" class="fade-in" onclick="shareQuote()">&#128279; Share Quote</button>
-    <div id="countdown" style="
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  background-color: rgba(0,0,0,0.5);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-family: monospace;
-  font-size: 0.9em;
-  z-index: 999;
-">
-        Loading countdown...
-    </div>
-
-
+    <input type="date" id="datePicker" class="fade-in">
+    <button id="backToToday" onclick="goToToday()">&#8617; Back to Today</button>
+    <div id="countdown">Loading countdown...</div>
 
     <script type="module" src="/src/main.js"></script>
 </body>

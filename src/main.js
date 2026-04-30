@@ -12,41 +12,78 @@ Promise.all([
     dialogueData = data;
     taglines = text.split('\n').filter(line => line.trim() !== '');
     showRandomLine();
+    initDatePicker();
 });
 
-function showRandomLine() {
-    if (dialogueData.length === 0) return;
+function getLocalDateStr(date = new Date()) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
 
-    const d = new Date();
-    const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const item = getQuoteForDate(dialogueData, today);
-    const dayIndex = getDayIndex(today);
+function displayQuote(dateStr) {
+    const item = getQuoteForDate(dialogueData, dateStr);
+    const dayIndex = getDayIndex(dateStr);
 
     const taglineIndex = dayIndex % taglines.length;
-    const taglineTemplate = taglines[taglineIndex];
-    const tagline = taglineTemplate.replace(/\[character\]/gi, item.character);
+    const tagline = taglines[taglineIndex].replace(/\[character\]/gi, item.character);
 
     const imageElement = document.getElementById('characterImage');
     const dialogueText = document.getElementById('dialogueText');
-    const taglineEl = document.getElementById('tagline');
-    const citationEl = document.getElementById('citation');
 
     imageElement.src = '/' + item.image;
     imageElement.alt = item.character;
     dialogueText.innerHTML = `"${item.line}"`;
-    citationEl.innerHTML = `— <strong>${item.character}</strong>, ${item.episode_code}: "${item.episode}"`;
-    taglineEl.innerHTML = tagline;
+    document.getElementById('citation').innerHTML = `— <strong>${item.character}</strong>, ${item.episode_code}: "${item.episode}"`;
+    document.getElementById('tagline').innerHTML = tagline;
+
+    const displayDate = new Date(dateStr + 'T00:00:00').toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('siteTitle').textContent = `QUOTE OF THE DAY: ${displayDate}`;
 
     scaleDialogueText(dialogueText);
 }
 
-window.shareQuote = function () {
+function showRandomLine() {
+    displayQuote(getLocalDateStr());
+}
+
+function initDatePicker() {
+    const picker = document.getElementById('datePicker');
+    const today = getLocalDateStr();
+    picker.max = today;
+    picker.value = today;
+
+    picker.addEventListener('change', () => {
+        const selected = picker.value;
+        displayQuote(selected);
+        document.getElementById('backToToday').style.display = selected === today ? 'none' : 'inline-block';
+    });
+}
+
+window.goToToday = function () {
+    const today = getLocalDateStr();
+    const picker = document.getElementById('datePicker');
+    picker.value = today;
+    displayQuote(today);
+    document.getElementById('backToToday').style.display = 'none';
+};
+
+window.shareQuote = async function () {
     const dialogue = document.getElementById('dialogueText').textContent;
     const citation = document.getElementById('citation').textContent;
-    const shareText = `${dialogue}\n${citation}\n\nRegular Show Quote of the Day (https://regular-show-qotd.vercel.app/)`;
+    const dateStr = document.getElementById('datePicker').value;
+    const displayDate = new Date(dateStr + 'T00:00:00').toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    const shareText = `${dialogue}\n${citation}\n\n${displayDate} — Regular Show Quote of the Day (https://regular-show-qotd.vercel.app/)`;
     const btn = document.getElementById('shareButton');
 
     if (navigator.share) {
+        const imgSrc = document.getElementById('characterImage').src;
+        try {
+            const blob = await fetch(imgSrc).then(r => r.blob());
+            const file = new File([blob], 'character.png', { type: blob.type });
+            if (navigator.canShare({ files: [file] })) {
+                await navigator.share({ files: [file], text: shareText });
+                return;
+            }
+        } catch (_) {}
         navigator.share({ text: shareText });
     } else {
         navigator.clipboard.writeText(shareText).then(() => {
@@ -61,11 +98,6 @@ function initPage() {
     fadeIns.forEach((el, i) => {
         setTimeout(() => el.classList.add('visible'), i * loadingTime);
     });
-
-    const siteTitle = document.getElementById('siteTitle');
-    const today = new Date();
-    const dateStr = today.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-    siteTitle.textContent = `QUOTE OF THE DAY: ${dateStr}`;
 }
 
 if (document.readyState === 'loading') {
