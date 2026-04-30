@@ -97,6 +97,17 @@ button {
     cursor: pointer;
 }
 
+#shareButton,
+#datePicker {
+    opacity: 0;
+    transition: opacity 1s ease-in;
+}
+
+#shareButton.visible,
+#datePicker.visible {
+    opacity: 1;
+}
+
 #shareButton {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);

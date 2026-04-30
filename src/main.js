@@ -23,7 +23,7 @@ function displayQuote(dateStr) {
     const item = getQuoteForDate(dialogueData, dateStr);
     const dayIndex = getDayIndex(dateStr);
 
-    const taglineIndex = dayIndex % taglines.length;
+    const taglineIndex = ((dayIndex % taglines.length) + taglines.length) % taglines.length;
     const tagline = taglines[taglineIndex].replace(/\[character\]/gi, item.character);
 
     const imageElement = document.getElementById('characterImage');
@@ -39,6 +39,9 @@ function displayQuote(dateStr) {
     document.getElementById('siteTitle').textContent = `QUOTE OF THE DAY: ${displayDate}`;
 
     scaleDialogueText(dialogueText);
+
+    document.getElementById('shareButton').classList.add('visible');
+    document.getElementById('datePicker').classList.add('visible');
 }
 
 function showRandomLine() {
@@ -51,8 +54,13 @@ function initDatePicker() {
     picker.max = today;
     picker.value = today;
 
-    picker.addEventListener('change', () => {
-        const selected = picker.value;
+    picker.addEventListener('input', () => {
+        let selected = picker.value;
+        if (!selected) return;
+        if (selected > today) {
+            picker.value = today;
+            selected = today;
+        }
         displayQuote(selected);
         document.getElementById('backToToday').style.display = selected === today ? 'none' : 'inline-block';
     });

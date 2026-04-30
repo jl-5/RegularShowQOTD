@@ -18,13 +18,17 @@ export function seededShuffle(array, seed) {
 }
 
 export function getDayIndex(dateStr) {
-    return Math.floor(new Date(dateStr).getTime() / (1000 * 60 * 60 * 24));
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const d = new Date(0);
+    d.setUTCFullYear(year, month - 1, day);
+    return Math.floor(d.getTime() / (1000 * 60 * 60 * 24));
 }
 
 export function getQuoteForDate(dialogueData, dateStr) {
     const dayIndex = getDayIndex(dateStr);
     const ordered = seededShuffle(dialogueData, 42);
-    return ordered[dayIndex % ordered.length];
+    const index = ((dayIndex % ordered.length) + ordered.length) % ordered.length;
+    return ordered[index];
 }
 
 export function scaleDialogueText(el) {
